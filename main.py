@@ -18,8 +18,29 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
+class Blog_entries(db.Model):
+    title = db.StringProperty(required=True)
+    blog_entry = db.TextProperty(required=True)
+    created = db.DateTimeProperty(auto_now_add = True)
+
 class MainPage(Handler):
+    def render_blog_form(self, title="", blog_entry="", error=""):
+        entries = db.GqlQuery("SELECT * FROM Blog_entries ORDER BY created DESC")
+        self.render("blog.html", title=title, blog_entry=blog_entry, error=error, entries=entries)
+
     def get(self):
-        self.render("blog.html")
+        self.render_blog_form()
+    def post(self):
+        title = self.request.get("title")
+        blog_entry =self.request.get("blog_entry")
+
+        if title and blog_entry:
+            b = Blog_entries(title=title, blog_entry=blog_entry)
+            b.put()
+
+            self.redirect("/")
+        else:
+            error = "A blog post need a title and a entry!"
+            self.render_blog_form(title, blog_entry, error)
 
 app = webapp2.WSGIApplication([('/', MainPage)], debug=True)
