@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>New Entry</title>
+  </head>
+  <body>
+    <h1>Blog</h1>
+    <form method="post">
+      <label for="">
+        <div>Title</div>
+        <input type="text" name="title" value={{title}}>
+      </label>
+      <label for="">
+        <div>Blog entry:</div>
+        <textarea name="blog_entry" id="" cols="30" rows="10">{{blog_entry}}</textarea>
+      </label>
+      <div class="error">{{error}}</div>
+      <input type="submit">
+    </form>
+
+    <hr>
+
+    <!-- {% for entry in entries %}
+    <div class="entry">
+      <div class = "entry_title">{{entry.title}}</div>
+      <pre class="blog_body">{{entry.blog_entry}}</pre>
+    </div>
+    {% endfor %} -->
+  </body>
+</html>

@@ -2,16 +2,14 @@
 
 <html>
   <head>
-    <title>Blog</title>
+    <title>{{entry.title}}</title>
   </head>
   <body>
-    <h1>Blog</h1>
 
-    {% for entry in entries %}
     <div class="entry">
       <div class = "entry_title">{{entry.title}}</div>
       <pre class="blog_body">{{entry.blog_entry}}</pre>
     </div>
-    {% endfor %}
+
   </body>
 </html>
