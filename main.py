@@ -22,7 +22,6 @@ class Blog_entries(db.Model):
     title = db.StringProperty(required=True)
     blog_entry = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add = True)
-    # id=db.ID
 
 class MainPage(Handler):
     def render_blog(self, title="", blog_entry="", error=""):
@@ -33,21 +32,22 @@ class MainPage(Handler):
         self.render_blog()
 
 class PostPage(Handler):
-    def render_post(post):
-        self.render("entry.html", title=title, blog_entry=blog_entry, error=error, entry=post)
+    def render_post(self, post):
+        self.render("entry.html", entry=post)
 
     def get(self, post_id):
-        key = db.Key.from_path('Post', int(post_id))
+        key = db.Key.from_path('Blog_entries', int(post_id))
         post = db.get(key)
+
+        if not post:
+            self.error(404)
+            return
+
         self.render_post(post)
 
 class NewPost(Handler):
-    def render_blog_form(self, title="", blog_entry="", error=""):
-        entries = db.GqlQuery("SELECT * FROM Blog_entries ORDER BY created DESC")
-        self.render("new_entry.html", title=title, blog_entry=blog_entry, error=error, entries=entries)
-
     def get(self):
-        self.render_blog_form()
+        self.render("new_entry.html")
 
     def post(self):
         title = self.request.get("title")
@@ -55,11 +55,10 @@ class NewPost(Handler):
 
         if title and blog_entry:
             b = Blog_entries(title=title, blog_entry=blog_entry)
-            obj = b.put()
-
-            self.redirect("/blog/" + post_id)
+            b.put()
+            self.redirect('/blog/%s' % str(b.key().id()))
         else:
             error = "A blog post need a title and a entry!"
             self.render_blog_form(title, blog_entry, error)
 
-app = webapp2.WSGIApplication([('/blog', MainPage),('/blog/newpost', NewPost),(r'/blog/(\d+)', PostPage)], debug=True)
+app = webapp2.WSGIApplication([('/blog/?', MainPage),('/blog/newpost', NewPost),('/blog/([0-9]+)', PostPage)], debug=True)
