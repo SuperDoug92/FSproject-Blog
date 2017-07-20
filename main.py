@@ -59,22 +59,66 @@ class NewPost(Handler):
             self.redirect('/blog/%s' % str(b.key().id()))
         else:
             error = "A blog post need a title and a entry!"
-            self.render_blog_form(title, blog_entry, error)
+            self.render("new_entry.html", title=title, blog_entry=blog_entry, error=error)
+
+class Welcome(Handler):
+    def get(self):
+        self.render("welcome.html")
+
+    # def post(self):
+    #     title = self.request.get("title")
+    #     blog_entry =self.request.get("blog_entry")
+    #
+    #     if title and blog_entry:
+    #         b = Blog_entries(title=title, blog_entry=blog_entry)
+    #         b.put()
+    #         self.redirect('/blog/%s' % str(b.key().id()))
+    #     else:
+    #         error = "A blog post need a title and a entry!"
+    #         self.render_blog_form(title, blog_entry, error)
 
 class SignUp(Handler):
     def get(self):
         self.render("sign_up.html")
 
-    def post(self):
-        title = self.request.get("title")
-        blog_entry =self.request.get("blog_entry")
+    def validateUsername(username):
+        USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
+        return USER_RE.match(username)
 
-        if title and blog_entry:
-            b = Blog_entries(title=title, blog_entry=blog_entry)
-            b.put()
-            self.redirect('/blog/%s' % str(b.key().id()))
+    def validatePassword(password, verify):
+        if password != verify:
+            return False
         else:
-            error = "A blog post need a title and a entry!"
-            self.render_blog_form(title, blog_entry, error)
+            return True
 
-app = webapp2.WSGIApplication([('/blog/?', MainPage),('/signup', SignUp),('/blog/newpost', NewPost),('/blog/([0-9]+)', PostPage)], debug=True)
+    def validateEmail(email):
+        EMAIL_RE = re.compile(r"^.{3,20}$")
+        return EMAIL_RE.match(email)
+
+    def post(self):
+        username = self.request.get("username")
+        password = self.request.get("password")
+        verify = self.request.get("verify")
+        email = self.request.get("email")
+        usernameError = ''
+        matchError = ''
+        emailError = ''
+
+        if validateUsername(username) = None:
+            usernameError = 'invalid username'
+
+        if not validatePassword(password, verify):
+            matchError = 'Passwords do not match'
+
+        if not validateEmail(email):
+            emailError = 'Email not valid'
+
+        if usernameError == ''and matchError == '' and emailError == '':
+            # b = Blog_entries(title=title, blog_entry=blog_entry)
+            # b.put()
+            self.redirect('/welcome')
+        else:
+            self.render("sign_up.html", usernameError=usernameError, matchError=matchError, emailError=emailError)
+
+
+app = webapp2.WSGIApplication([('/signup', SignUp),('/welcome', Welcome),('/blog/?', MainPage),('/blog/newpost', NewPost),('/blog/([0-9]+)', PostPage)], debug=True)
