@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Sign Up</title>
+  </head>
+  <body>
+    <h1>Sign Up</h1>
+    <form method="post">
+      <label for="">
+        <div>Username</div>
+        <input type="text" name="username" value=>
+      </label>
+      <label for="">
+        <div>Password</div>
+        <input type="password" name="password">
+      </label>
+      <label for="">
+        <div>Verify Password</div>
+        <input type="password" name="verifyPassword">
+        <span>{{matchError}}</span>
+      </label>
+      <label for="">
+        <div>Email(optional)</div>
+        <input type="text" name="email">
+      </label>
+      <div class="error">{{error}}</div>
+      <input type="submit">
+    </form>
+
+    <hr>
+
+    <!-- {% for entry in entries %}
+    <div class="entry">
+      <div class = "entry_title">{{entry.title}}</div>
+      <pre class="blog_body">{{entry.blog_entry}}</pre>
+    </div>
+    {% endfor %} -->
+  </body>
+</html>

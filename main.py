@@ -61,4 +61,20 @@ class NewPost(Handler):
             error = "A blog post need a title and a entry!"
             self.render_blog_form(title, blog_entry, error)
 
-app = webapp2.WSGIApplication([('/blog/?', MainPage),('/blog/newpost', NewPost),('/blog/([0-9]+)', PostPage)], debug=True)
+class SignUp(Handler):
+    def get(self):
+        self.render("sign_up.html")
+
+    def post(self):
+        title = self.request.get("title")
+        blog_entry =self.request.get("blog_entry")
+
+        if title and blog_entry:
+            b = Blog_entries(title=title, blog_entry=blog_entry)
+            b.put()
+            self.redirect('/blog/%s' % str(b.key().id()))
+        else:
+            error = "A blog post need a title and a entry!"
+            self.render_blog_form(title, blog_entry, error)
+
+app = webapp2.WSGIApplication([('/blog/?', MainPage),('/signup', SignUp),('/blog/newpost', NewPost),('/blog/([0-9]+)', PostPage)], debug=True)
